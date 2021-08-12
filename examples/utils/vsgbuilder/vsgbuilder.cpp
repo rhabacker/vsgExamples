@@ -6,6 +6,29 @@
 
 #include <iostream>
 
+struct FindMatchingBufferInfo : public vsg::Visitor
+{
+    vsg::ref_ptr<vsg::Data> data;
+    std::set<vsg::ref_ptr<vsg::BufferInfo>> matches;
+
+    FindMatchingBufferInfo(vsg::ref_ptr<vsg::Data> in_data) : data(in_data) {}
+
+
+    void apply(vsg::Object& object) override
+    {
+        object.traverse(*this);
+    }
+
+    void apply(vsg::VertexIndexDraw& vid) override
+    {
+        for(auto& bufferInfo : vid.arrays)
+        {
+            if (bufferInfo->data == data) matches.insert(bufferInfo);
+        }
+    }
+};
+
+
 int main(int argc, char** argv)
 {
     // set up defaults and read command line arguments to override them
@@ -48,6 +71,10 @@ int main(int argc, char** argv)
     bool quad = arguments.read("--quad");
     bool sphere = arguments.read("--sphere");
 
+    bool dynamicUpdates = arguments.read("--dynamic");
+    size_t frameToWait = arguments.value<size_t>(2, {"--frames-to-wait", "--f2w"});
+    auto waitTimeout = arguments.value<uint64_t>(50000000, {"--timeout", "--to"});
+
     if (!(box || sphere || cone || capsule || quad || cylinder))
     {
         box = true;
@@ -74,8 +101,8 @@ int main(int argc, char** argv)
     vsg::dvec3 centre = {0.0, 0.0, 0.0};
     double radius = 1.0;
 
+    vsg::GeometryInfo info;
     {
-        vsg::GeometryInfo info;
         info.dx.set(1.0f, 0.0f, 0.0f);
         info.dy.set(0.0f, 1.0f, 0.0f);
         info.dz.set(0.0f, 0.0f, 1.0f);
@@ -162,6 +189,19 @@ int main(int argc, char** argv)
         // update the centre and radius to account for all the shapes added so we can position the camera to see them all.
         centre = (bound.min + bound.max) * 0.5;
         radius += vsg::length(bound.max - bound.min) * 0.5;
+
+    }
+
+    if (info.positions)
+    {
+        FindMatchingBufferInfo findMatches(info.positions);
+        scene->accept(findMatches);
+
+        std::cout<<"Found matches "<<findMatches.matches.size()<<" for "<<info.positions<<std::endl;
+        for(auto& bufferInfo : findMatches.matches)
+        {
+            std::cout<<"    "<<bufferInfo<<", "<<bufferInfo->buffer<<", "<<bufferInfo->offset<<", "<<bufferInfo->range<<", "<<bufferInfo->data<<std::endl;
+        }
     }
 
     // create the viewer and assign window(s) to it
@@ -200,13 +240,39 @@ int main(int argc, char** argv)
 
     viewer->addEventHandler(vsg::Trackball::create(camera));
 
-    auto commandGraph = vsg::createCommandGraphForView(window, camera, scene);
+    auto memoryBufferPools = vsg::MemoryBufferPools::create("Staging_MemoryBufferPool", window->getDevice(), vsg::BufferPreferences{});
+    auto copyBufferCmd = vsg::CopyAndReleaseBuffer::create(memoryBufferPools);
+
+    auto renderGraph = vsg::createRenderGraphForView(window, camera, scene);
+
+    auto commandGraph = vsg::CommandGraph::create(window);
+    commandGraph->addChild(copyBufferCmd);
+    commandGraph->addChild(renderGraph);
+
     viewer->assignRecordAndSubmitTaskAndPresentation({commandGraph});
 
     viewer->compile();
 
     auto startTime = vsg::clock::now();
     double numFramesCompleted = 0.0;
+
+    vsg::ref_ptr<vsg::vec3Array> positions = info.positions;
+    std::set<vsg::ref_ptr<vsg::BufferInfo>> bufferInfos;
+
+    if (info.positions)
+    {
+        FindMatchingBufferInfo findMatches(info.positions);
+        scene->accept(findMatches);
+        bufferInfos = findMatches.matches;
+
+        std::cout<<"Found matches "<<findMatches.matches.size()<<" for "<<info.positions<<std::endl;
+        for(auto& bufferInfo : findMatches.matches)
+        {
+            std::cout<<"    "<<bufferInfo<<", "<<bufferInfo->buffer<<", "<<bufferInfo->offset<<", "<<bufferInfo->range<<", "<<bufferInfo->data<<std::endl;
+        }
+    }
+
+    dynamicUpdates = info.positions.valid() && dynamicUpdates;
 
     // rendering main loop
     while (viewer->advanceToNextFrame() && (numFrames < 0 || (numFrames--) > 0))
@@ -215,6 +281,26 @@ int main(int argc, char** argv)
         viewer->handleEvents();
 
         viewer->update();
+
+        if (dynamicUpdates)
+        {
+            for(auto& v : *positions)
+            {
+                v.z += 0.01*std::sin(0.01*float(viewer->getFrameStamp()->frameCount)) * v.x;
+                //std::cout<<"new vertex "<<v<<std::endl;
+            }
+
+            if (frameToWait>0 && waitTimeout>0)
+            {
+                viewer->waitForFences(frameToWait, waitTimeout);
+            }
+
+            // pass the poisitions to GPU
+            for(auto& bufferInfo : bufferInfos)
+            {
+                copyBufferCmd->copy(positions, bufferInfo);
+            }
+        }
 
         viewer->recordAndSubmit();
 
