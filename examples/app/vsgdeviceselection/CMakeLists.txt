@@ -11,4 +11,4 @@ if (vsgXchange_FOUND)
     target_link_libraries(vsgdeviceselection vsgXchange::vsgXchange)
 endif()
 
-install(TARGETS vsgdeviceselection RUNTIME DESTINATION bin)
+install(TARGETS vsgdeviceselection RUNTIME DESTINATION ${VSGEXAMPLES_INSTALL_BINDIR})

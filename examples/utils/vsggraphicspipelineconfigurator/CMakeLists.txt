@@ -11,4 +11,4 @@ if (vsgXchange_FOUND)
     target_link_libraries(vsggraphicspipelineconfigurator vsgXchange::vsgXchange)
 endif()
 
-install(TARGETS vsggraphicspipelineconfigurator RUNTIME DESTINATION bin)
+install(TARGETS vsggraphicspipelineconfigurator RUNTIME DESTINATION ${VSGEXAMPLES_INSTALL_BINDIR})

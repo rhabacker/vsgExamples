@@ -15,4 +15,4 @@ if (vsgXchange_FOUND)
     target_link_libraries(vsgshaderset vsgXchange::vsgXchange)
 endif()
 
-install(TARGETS vsgshaderset RUNTIME DESTINATION bin)
+install(TARGETS vsgshaderset RUNTIME DESTINATION ${VSGEXAMPLES_INSTALL_BINDIR})

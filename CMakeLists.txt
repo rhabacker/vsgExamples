@@ -66,6 +66,9 @@ endif()
 # install data
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/ DESTINATION share/vsgExamples)
 
+# setup install location for examples
+set(VSGEXAMPLES_INSTALL_BINDIR ${CMAKE_INSTALL_LIBDIR}/${PROJECT_NAME}/bin)
+
 # pure VSG examples
 add_subdirectory(examples/core)
 add_subdirectory(examples/maths)

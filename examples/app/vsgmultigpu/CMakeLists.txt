@@ -11,4 +11,4 @@ if (vsgXchange_FOUND)
     target_link_libraries(vsgmultigpu vsgXchange::vsgXchange)
 endif()
 
-install(TARGETS vsgmultigpu RUNTIME DESTINATION bin)
+install(TARGETS vsgmultigpu RUNTIME DESTINATION ${VSGEXAMPLES_INSTALL_BINDIR})

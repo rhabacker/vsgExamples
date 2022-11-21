@@ -11,4 +11,4 @@ if (vsgXchange_FOUND)
     target_link_libraries(vsgbuilder vsgXchange::vsgXchange)
 endif()
 
-install(TARGETS vsgbuilder RUNTIME DESTINATION bin)
+install(TARGETS vsgbuilder RUNTIME DESTINATION ${VSGEXAMPLES_INSTALL_BINDIR})

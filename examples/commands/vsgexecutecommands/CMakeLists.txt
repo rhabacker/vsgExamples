@@ -11,4 +11,4 @@ if (vsgXchange_FOUND)
     target_link_libraries(vsgexecutecommands vsgXchange::vsgXchange)
 endif()
 
-install(TARGETS vsgexecutecommands RUNTIME DESTINATION bin)
+install(TARGETS vsgexecutecommands RUNTIME DESTINATION ${VSGEXAMPLES_INSTALL_BINDIR})

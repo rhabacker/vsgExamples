@@ -9,4 +9,4 @@ if (vsgXchange_FOUND)
     target_link_libraries(vsgtexturearray vsgXchange::vsgXchange)
 endif()
 
-install(TARGETS vsgtexturearray RUNTIME DESTINATION bin)
+install(TARGETS vsgtexturearray RUNTIME DESTINATION ${VSGEXAMPLES_INSTALL_BINDIR})

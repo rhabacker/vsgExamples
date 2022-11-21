@@ -11,4 +11,4 @@ if (vsgXchange_FOUND)
     target_link_libraries(vsgviewer vsgXchange::vsgXchange)
 endif()
 
-install(TARGETS vsgviewer RUNTIME DESTINATION bin)
+install(TARGETS vsgviewer RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})

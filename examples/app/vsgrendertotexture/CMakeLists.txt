@@ -6,4 +6,4 @@ add_executable(vsgrendertotexture ${SOURCES})
 
 target_link_libraries(vsgrendertotexture vsg::vsg)
 
-install(TARGETS vsgrendertotexture RUNTIME DESTINATION bin)
+install(TARGETS vsgrendertotexture RUNTIME DESTINATION ${VSGEXAMPLES_INSTALL_BINDIR})

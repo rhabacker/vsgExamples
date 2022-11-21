@@ -4,4 +4,4 @@ add_executable(vsgvisitorcustomtype ${SOURCES})
 
 target_link_libraries(vsgvisitorcustomtype vsg::vsg)
 
-install(TARGETS vsgvisitorcustomtype RUNTIME DESTINATION bin)
+install(TARGETS vsgvisitorcustomtype RUNTIME DESTINATION ${VSGEXAMPLES_INSTALL_BINDIR})

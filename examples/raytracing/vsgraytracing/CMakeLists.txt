@@ -11,4 +11,4 @@ if (vsgXchange_FOUND)
     target_link_libraries(vsgraytracing vsgXchange::vsgXchange)
 endif()
 
-install(TARGETS vsgraytracing RUNTIME DESTINATION bin)
+install(TARGETS vsgraytracing RUNTIME DESTINATION ${VSGEXAMPLES_INSTALL_BINDIR})

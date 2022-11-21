@@ -11,4 +11,4 @@ if (vsgXchange_FOUND)
     target_link_libraries(vsganaglyphicstereo vsgXchange::vsgXchange)
 endif()
 
-install(TARGETS vsganaglyphicstereo RUNTIME DESTINATION bin)
+install(TARGETS vsganaglyphicstereo RUNTIME DESTINATION ${VSGEXAMPLES_INSTALL_BINDIR})

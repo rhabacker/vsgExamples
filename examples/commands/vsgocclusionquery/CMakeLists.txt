@@ -9,4 +9,4 @@ if (vsgXchange_FOUND)
     target_link_libraries(vsgocclusionquery vsgXchange::vsgXchange)
 endif()
 
-install(TARGETS vsgocclusionquery RUNTIME DESTINATION bin)
+install(TARGETS vsgocclusionquery RUNTIME DESTINATION ${VSGEXAMPLES_INSTALL_BINDIR})

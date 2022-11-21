@@ -4,4 +4,4 @@ add_executable(vsginterleaved ${SOURCES})
 
 target_link_libraries(vsginterleaved vsg::vsg)
 
-install(TARGETS vsginterleaved RUNTIME DESTINATION bin)
+install(TARGETS vsginterleaved RUNTIME DESTINATION ${VSGEXAMPLES_INSTALL_BINDIR})

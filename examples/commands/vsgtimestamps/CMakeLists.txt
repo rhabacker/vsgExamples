@@ -9,4 +9,4 @@ if (vsgXchange_FOUND)
     target_link_libraries(vsgtimestamps vsgXchange::vsgXchange)
 endif()
 
-install(TARGETS vsgtimestamps RUNTIME DESTINATION bin)
+install(TARGETS vsgtimestamps RUNTIME DESTINATION ${VSGEXAMPLES_INSTALL_BINDIR})

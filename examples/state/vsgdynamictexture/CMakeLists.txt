@@ -4,4 +4,4 @@ add_executable(vsgdynamictexture ${SOURCES})
 
 target_link_libraries(vsgdynamictexture vsg::vsg)
 
-install(TARGETS vsgdynamictexture RUNTIME DESTINATION bin)
+install(TARGETS vsgdynamictexture RUNTIME DESTINATION ${VSGEXAMPLES_INSTALL_BINDIR})

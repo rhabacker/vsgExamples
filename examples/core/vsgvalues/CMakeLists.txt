@@ -4,4 +4,4 @@ add_executable(vsgvalues ${SOURCES})
 
 target_link_libraries(vsgvalues vsg::vsg)
 
-install(TARGETS vsgvalues RUNTIME DESTINATION bin)
+install(TARGETS vsgvalues RUNTIME DESTINATION ${VSGEXAMPLES_INSTALL_BINDIR})

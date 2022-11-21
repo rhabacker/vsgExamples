@@ -11,4 +11,4 @@ if (vsgXchange_FOUND)
     target_link_libraries(vsgscreenshot vsgXchange::vsgXchange)
 endif()
 
-install(TARGETS vsgscreenshot RUNTIME DESTINATION bin)
+install(TARGETS vsgscreenshot RUNTIME DESTINATION ${VSGEXAMPLES_INSTALL_BINDIR})

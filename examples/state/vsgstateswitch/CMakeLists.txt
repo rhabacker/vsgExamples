@@ -11,4 +11,4 @@ if (vsgXchange_FOUND)
     target_link_libraries(vsgstateswitch vsgXchange::vsgXchange)
 endif()
 
-install(TARGETS vsgstateswitch RUNTIME DESTINATION bin)
+install(TARGETS vsgstateswitch RUNTIME DESTINATION ${VSGEXAMPLES_INSTALL_BINDIR})

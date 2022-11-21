@@ -11,4 +11,4 @@ if (vsgXchange_FOUND)
     target_link_libraries(vsgclip vsgXchange::vsgXchange)
 endif()
 
-install(TARGETS vsgclip RUNTIME DESTINATION bin)
+install(TARGETS vsgclip RUNTIME DESTINATION ${VSGEXAMPLES_INSTALL_BINDIR})

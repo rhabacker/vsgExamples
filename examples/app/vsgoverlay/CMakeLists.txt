@@ -11,4 +11,4 @@ if (vsgXchange_FOUND)
     target_link_libraries(vsgoverlay vsgXchange::vsgXchange)
 endif()
 
-install(TARGETS vsgoverlay RUNTIME DESTINATION bin)
+install(TARGETS vsgoverlay RUNTIME DESTINATION ${VSGEXAMPLES_INSTALL_BINDIR})

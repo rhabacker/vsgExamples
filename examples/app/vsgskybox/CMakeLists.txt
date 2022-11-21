@@ -9,4 +9,4 @@ if (vsgXchange_FOUND)
     target_link_libraries(vsgskybox vsgXchange::vsgXchange)
 endif()
 
-install(TARGETS vsgskybox RUNTIME DESTINATION bin)
+install(TARGETS vsgskybox RUNTIME DESTINATION ${VSGEXAMPLES_INSTALL_BINDIR})

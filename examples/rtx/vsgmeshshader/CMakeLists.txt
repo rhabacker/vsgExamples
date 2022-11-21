@@ -11,4 +11,4 @@ if (vsgXchange_FOUND)
     target_link_libraries(vsgmeshshader vsgXchange::vsgXchange)
 endif()
 
-install(TARGETS vsgmeshshader RUNTIME DESTINATION bin)
+install(TARGETS vsgmeshshader RUNTIME DESTINATION ${VSGEXAMPLES_INSTALL_BINDIR})

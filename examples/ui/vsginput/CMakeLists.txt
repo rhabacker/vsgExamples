@@ -6,4 +6,4 @@ add_executable(vsginput ${SOURCES})
 
 target_link_libraries(vsginput vsg::vsg)
 
-install(TARGETS vsginput RUNTIME DESTINATION bin)
+install(TARGETS vsginput RUNTIME DESTINATION ${VSGEXAMPLES_INSTALL_BINDIR})

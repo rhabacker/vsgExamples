@@ -11,4 +11,4 @@ if (vsgXchange_FOUND)
     target_link_libraries(vsghelloworld vsgXchange::vsgXchange)
 endif()
 
-install(TARGETS vsghelloworld RUNTIME DESTINATION bin)
+install(TARGETS vsghelloworld RUNTIME DESTINATION ${VSGEXAMPLES_INSTALL_BINDIR})

@@ -11,4 +11,4 @@ if (vsgXchange_FOUND)
     target_link_libraries(vsgallocator vsgXchange::vsgXchange)
 endif()
 
-install(TARGETS vsgallocator RUNTIME DESTINATION bin)
+install(TARGETS vsgallocator RUNTIME DESTINATION ${VSGEXAMPLES_INSTALL_BINDIR})

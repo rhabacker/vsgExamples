@@ -11,4 +11,4 @@ if (vsgXchange_FOUND)
     target_link_libraries(vsglights vsgXchange::vsgXchange)
 endif()
 
-install(TARGETS vsglights RUNTIME DESTINATION bin)
+install(TARGETS vsglights RUNTIME DESTINATION ${VSGEXAMPLES_INSTALL_BINDIR})

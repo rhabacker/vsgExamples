@@ -4,4 +4,4 @@ add_executable(vsgsubpass ${SOURCES})
 
 target_link_libraries(vsgsubpass vsg::vsg)
 
-install(TARGETS vsgsubpass RUNTIME DESTINATION bin)
+install(TARGETS vsgsubpass RUNTIME DESTINATION ${VSGEXAMPLES_INSTALL_BINDIR})

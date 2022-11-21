@@ -4,4 +4,4 @@ add_executable(vsgarrays ${SOURCES})
 
 target_link_libraries(vsgarrays vsg::vsg)
 
-install(TARGETS vsgarrays RUNTIME DESTINATION bin)
+install(TARGETS vsgarrays RUNTIME DESTINATION ${VSGEXAMPLES_INSTALL_BINDIR})
