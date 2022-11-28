@@ -223,6 +223,7 @@ int main(int argc, char** argv)
         auto horizonMountainHeight = arguments.value(0.0, "--hmh");
         auto mipmapLevelsHint = arguments.value<uint32_t>(0, {"--mipmapLevels", "--mml"});
         if (arguments.read("--rgb")) options->mapRGBtoRGBAHint = false;
+        auto showFrameRate = arguments.read("--show-framerate");
 
         if (int log_level = 0; arguments.read("--log-level", log_level)) vsg::Logger::instance()->level = vsg::Logger::Level(log_level);
 
@@ -361,6 +362,17 @@ int main(int argc, char** argv)
             viewer->recordAndSubmit();
 
             viewer->present();
+
+            if (showFrameRate)
+            {
+                static vsg::FrameStamp oldStamp;
+                const auto end = viewer->getFrameStamp()->time;
+                const auto start = oldStamp.time;
+                const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+                const double frequence = 1000000.0 / duration;
+                std::cout << viewer->getFrameStamp()->frameCount << " " << duration / 1000.0 << " ms " << frequence << " Hz" << std::endl;
+                oldStamp = *viewer->getFrameStamp();
+            }
         }
     }
     catch (const vsg::Exception& ve)
