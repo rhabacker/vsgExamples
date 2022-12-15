@@ -6,6 +6,52 @@
 
 #include <iostream>
 
+namespace vsg {
+
+class MyBuilder: public vsg::Inherit<Builder, MyBuilder>
+{
+public:
+    // provide private member from Builder
+    mat4 identity;
+
+    // provide private method from Builder
+    void transform(const mat4& matrix, ref_ptr<vec3Array> vertices, ref_ptr<vec3Array> normals)
+    {
+        for (auto& v : *vertices)
+        {
+            v = matrix * v;
+        }
+
+        if (normals)
+        {
+            mat4 normal_matrix = inverse(matrix);
+            for (auto& n : *normals)
+            {
+                vec4 nv = vec4(n.x, n.y, n.z, 0.0) * normal_matrix;
+                n = normalize(vec3(nv.x, nv.y, nv.z));
+            }
+        }
+    }
+
+    // provide private method from Builder
+    vec3 y_texcoord(const StateInfo& info) const
+    {
+
+        if ((info.image && info.image->properties.origin == Origin::TOP_LEFT) ||
+            (info.displacementMap && info.displacementMap->properties.origin == Origin::TOP_LEFT))
+        {
+            return {1.0f, -1.0f, 0.0f};
+        }
+        else
+        {
+            return {0.0f, 1.0f, 1.0f};
+        }
+    }
+
+};
+
+}
+
 int main(int argc, char** argv)
 {
     // set up defaults and read command line arguments to override them
