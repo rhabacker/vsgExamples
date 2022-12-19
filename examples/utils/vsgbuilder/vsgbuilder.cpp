@@ -8,9 +8,18 @@
 
 namespace vsg {
 
+/// GeometryInfo struct provides geometry related settings supported by Builder
+struct MyGeometryInfo : GeometryInfo
+{
+   ref_ptr<vec3Array> vertices;
+};
+
 class MyBuilder: public vsg::Inherit<Builder, MyBuilder>
 {
 public:
+    using GeometryMap = std::map<MyGeometryInfo, ref_ptr<Node>>;
+    GeometryMap _lines;
+
     // provide private member from Builder
     mat4 identity;
 
@@ -48,6 +57,78 @@ public:
         }
     }
 
+    ref_ptr<Node> createLines(const MyGeometryInfo& info, const StateInfo& stateInfo)
+    {
+        auto& subgraph = _lines[info];
+        if (subgraph)
+        {
+            return subgraph;
+        }
+
+        uint32_t instanceCount = 1;
+        auto positions = info.positions;
+        if (positions)
+        {
+            if (positions->size() >= 1)
+                instanceCount = static_cast<uint32_t>(positions->size());
+            else
+                positions = {};
+        }
+
+        auto colors = info.colors;
+        if (colors && colors->valueCount() != instanceCount) colors = {};
+        if (!colors) colors = vec4Array::create(instanceCount, info.color);
+
+        vsg::StateInfo localStateInfo(stateInfo);
+        // set assembly topology to VK_PRIMITIVE_TOPOLOGY_LINE_LIST
+        localStateInfo.wireframe = true;
+        auto scenegraph = createStateGroup(localStateInfo);
+
+        auto [t_origin, t_scale, t_top] = y_texcoord(stateInfo).value;
+
+        size_t numVertices = info.vertices->size();
+        auto vertices = info.vertices;
+        auto normals = vec3Array::create(numVertices); // VK_FORMAT_R32G32B32_SFLOAT, VK_VERTEX_INPUT_RATE_VERTEX, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_SHARING_MODE_EXCLUSIVE
+        auto texcoords = vec2Array::create(numVertices); // VK_FORMAT_R32G32_SFLOAT, VK_VERTEX_INPUT_RATE_VERTEX, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_SHARING_MODE_EXCLUSIVE
+        auto indices = ushortArray::create(numVertices);
+
+        for(size_t i = 0; i < numVertices; i+=2)
+        {
+            auto normal = normalize(cross(vertices->at(i), vertices->at(i+1)));
+            normals->set(i, normal);
+            normals->set(i+1, normal);
+            texcoords->set(i, {0.0f, t_origin});
+            texcoords->set(i+1, {0.0f, t_top});
+            indices->set(i, i);
+            indices->set(i+1, i+1);
+        }
+
+        if (info.transform != identity)
+        {
+            transform(info.transform, vertices, normals);
+        }
+
+        // setup geometry
+        auto vid = VertexIndexDraw::create();
+
+        DataList arrays;
+        arrays.push_back(vertices);
+        if (normals) arrays.push_back(normals);
+        if (texcoords) arrays.push_back(texcoords);
+        if (colors) arrays.push_back(colors);
+        if (positions) arrays.push_back(positions);
+        vid->assignArrays(arrays);
+
+        vid->assignIndices(indices);
+        vid->indexCount = static_cast<uint32_t>(indices->size());
+        vid->instanceCount = instanceCount;
+
+        scenegraph->addChild(vid);
+
+        if (compileTraversal) compileTraversal->compile(scenegraph);
+
+        return scenegraph;
+    }
 };
 
 }
